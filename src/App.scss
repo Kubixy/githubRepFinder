@@ -1,0 +1,81 @@
+.App {
+  flex-direction: column;
+  padding: 50px;
+
+  .authInput {
+    flex-direction: row;
+    margin-top: -25px;
+    width: 500px;
+    margin-top: 40px;
+
+    Input {
+      font-size: 20px;
+      width: 400px;
+    }
+
+    .checkmark.box.icon,
+    .arrow.circle.right {
+      padding-top: 15px !important;
+      font-size: 45px;
+    }
+
+    i {
+      font-size: 40px;
+      color: green;
+    }
+  }
+
+  .userInput {
+    flex-direction: row;
+    padding-top: 40px;
+    font-size: 25px;
+    width: 500px;
+
+    .ui.fluid.selection.dropdown {
+      width: 150px !important;
+
+      div div {
+        text-align: center;
+        font-size: 25px;
+      }
+    }
+
+    .ui.input {
+      width: 255px;
+    }
+  }
+
+  .repoList {
+    width: 70%;
+    font-size: 20px;
+    justify-content: center;
+    padding-top: 50px;
+
+    .content {
+      flex-direction: column;
+      height: 50px;
+    }
+  }
+}
+
+.App,
+.authInput,
+.userInput,
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+i,
+.checkmark.box.icon {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.ui.bottom.center.popup.transition.visible {
+  a {
+    font-size: 20px;
+  }
+}
