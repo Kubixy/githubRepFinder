@@ -15,6 +15,8 @@ export default function RepoFinder(props) {
   const [authToken, setAuthToken] = useState(null); //Token needed to make queries on github's graphql api
 
   const onClick = async () => {
+    if (userInput.length < 1) return;
+
     setLoadState(true);
     setErrorState(false);
 
@@ -78,6 +80,7 @@ export default function RepoFinder(props) {
         setApiAtuh(true);
         setUserBlock(false);
         setErrorState(false);
+        setSearchState(false);
       }
     }
 
@@ -129,7 +132,9 @@ export default function RepoFinder(props) {
                 setNoRepos(true);
                 setErrorState(false);
               }}
-              placeholder={searchState ? "Repository" : "Username..."}
+              placeholder={
+                searchState && !userBlock ? "Repository" : "Username..."
+              }
               maxLength="39"
               disabled={userBlock && searchState}
               error={errorState && !userBlock}
@@ -142,7 +147,7 @@ export default function RepoFinder(props) {
         />
         <Icon
           size="large"
-          name={searchState ? "undo" : "search"}
+          name={searchState && !userBlock ? "undo" : "search"}
           disabled={userBlock && searchState}
           onClick={() => (searchState ? reset() : onClick())}
         />
@@ -156,6 +161,7 @@ export default function RepoFinder(props) {
             pinned
             content={
               <a
+                rel="noopener noreferrer"
                 href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token"
                 target="_blank"
               >
@@ -166,7 +172,7 @@ export default function RepoFinder(props) {
               <Input
                 disabled={apiAtuh}
                 error={errorState && userBlock}
-                value={authToken}
+                value={authToken ? authToken : ""}
                 placeholder="Write your personal access token"
                 type="text"
                 onChange={(e) => {
@@ -186,7 +192,7 @@ export default function RepoFinder(props) {
             }
             loading={loadState && userBlock}
             onClick={() => {
-              if (!apiAtuh) loadAuthToken(userInput);
+              if (!apiAtuh && authToken.length > 0) loadAuthToken(authToken);
             }}
           />
         </div>

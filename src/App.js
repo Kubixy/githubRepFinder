@@ -19,7 +19,7 @@ function App() {
       <div className="repoList">
         {reposFound &&
           reposFound.map(
-            (x) =>
+            (x, i) =>
               //Returns every value if the filter has no value
               //Looks for matches if filter has at least 1 character
               (!filter ||
@@ -31,6 +31,7 @@ function App() {
                   <List.Item>
                     <List.Content>
                       <List.Header
+                        key={i}
                         as="a"
                         //The object returned by the api v3 has the repo url on html_url
                         //the api v4 has it on url
