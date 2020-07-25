@@ -7,7 +7,7 @@ export default function RepoFinder(props) {
   const [userInput, setUserInput] = useState(""); //Input from both textfields
   const [loadState, setLoadState] = useState(false);
   const [errorState, setErrorState] = useState(false);
-  const [searchState, setSearchState] = useState(false); //True --> User found and has repos > input is now used to filter repos / False --> User/repos not found
+  const [searchState, setSearchState] = useState(false); //True --> User found and has repos then input is now used to filter repos / False --> User/repos not found
   const [noRepos, setNoRepos] = useState(true); //False --> the user has no public repos / True --> The user has at least 1 repo
   const [dropdownState, setDropdownState] = useState(1);
   const [userBlock, setUserBlock] = useState(false); //Used to disable fields when using the api v4 option
@@ -99,9 +99,11 @@ export default function RepoFinder(props) {
           defaultValue={1}
           onChange={(event, { value }) => {
             reset();
-            setApiAtuh(value === 1);
             setDropdownState(value);
-            setUserBlock(value === 2);
+            if (!authToken && value === 2) {
+              setUserBlock(true);
+              setSearchState(true);
+            }
           }}
         />
 
@@ -129,7 +131,7 @@ export default function RepoFinder(props) {
               }}
               placeholder={searchState ? "Repository" : "Username..."}
               maxLength="39"
-              disabled={userBlock}
+              disabled={userBlock && searchState}
               error={errorState && !userBlock}
               loading={loadState && !userBlock}
               onKeyPress={(e) => {
@@ -141,7 +143,7 @@ export default function RepoFinder(props) {
         <Icon
           size="large"
           name={searchState ? "undo" : "search"}
-          disabled={userBlock}
+          disabled={userBlock && searchState}
           onClick={() => (searchState ? reset() : onClick())}
         />
       </div>
@@ -164,9 +166,12 @@ export default function RepoFinder(props) {
               <Input
                 disabled={apiAtuh}
                 error={errorState && userBlock}
+                value={authToken}
                 placeholder="Write your personal access token"
                 type="text"
-                onChange={(e) => setAuthToken(e.target.value)}
+                onChange={(e) => {
+                  if (!apiAtuh) setAuthToken(e.target.value);
+                }}
                 maxLength="100"
               />
             }
@@ -180,7 +185,9 @@ export default function RepoFinder(props) {
                 : "arrow circle right"
             }
             loading={loadState && userBlock}
-            onClick={() => loadAuthToken(userInput)}
+            onClick={() => {
+              if (!apiAtuh) loadAuthToken(userInput);
+            }}
           />
         </div>
       )}
