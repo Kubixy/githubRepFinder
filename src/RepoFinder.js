@@ -12,11 +12,10 @@ export default function RepoFinder(props) {
   const [dropdownState, setDropdownState] = useState(1);
   const [userBlock, setUserBlock] = useState(false); //Used to disable fields when using the api v4 option
   const [apiAtuh, setApiAtuh] = useState(false); //True --> The token needed on apiv4 is valid
-  const [authToken, setAuthToken] = useState(null); //Token needed to make queries on github's graphql api
+  const [authToken, setAuthToken] = useState(""); //Token needed to make queries on github's graphql api
 
   const onClick = async () => {
-    if (userInput.length < 1) return;
-
+    if (!userInput) return;
     setLoadState(true);
     setErrorState(false);
 
@@ -103,9 +102,12 @@ export default function RepoFinder(props) {
           onChange={(event, { value }) => {
             reset();
             setDropdownState(value);
-            if (!authToken && value === 2) {
+            if (!apiAtuh && value === 2) {
               setUserBlock(true);
               setSearchState(true);
+              setAuthToken("");
+            } else {
+              setUserBlock(false);
             }
           }}
         />
@@ -165,14 +167,14 @@ export default function RepoFinder(props) {
                 href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token"
                 target="_blank"
               >
-                You need to generate a token to use the API v4
+                You need to generate a token to use the Api v4
               </a>
             }
             trigger={
               <Input
                 disabled={apiAtuh}
                 error={errorState && userBlock}
-                value={authToken ? authToken : ""}
+                value={authToken}
                 placeholder="Write your personal access token"
                 type="text"
                 onChange={(e) => {
@@ -192,7 +194,7 @@ export default function RepoFinder(props) {
             }
             loading={loadState && userBlock}
             onClick={() => {
-              if (!apiAtuh && authToken.length > 0) loadAuthToken(authToken);
+              if (!apiAtuh && authToken) loadAuthToken(authToken);
             }}
           />
         </div>
