@@ -21,7 +21,6 @@
 
     i {
       font-size: 40px;
-      color: green;
     }
   }
 
@@ -67,10 +66,14 @@
   justify-content: space-evenly;
 }
 
-i,
-.checkmark.box.icon {
+i {
   &:hover {
     cursor: pointer;
+  }
+
+  &.checkmark.box.disabled.icon {
+    opacity: 0.65 !important;
+    color: #003cfa;
   }
 }
 

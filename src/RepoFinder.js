@@ -178,7 +178,7 @@ export default function RepoFinder(props) {
                 placeholder="Write your personal access token"
                 type="text"
                 onChange={(e) => {
-                  if (!apiAtuh) setAuthToken(e.target.value);
+                  setAuthToken(e.target.value);
                 }}
                 maxLength="100"
               />
@@ -193,8 +193,9 @@ export default function RepoFinder(props) {
                 : "arrow circle right"
             }
             loading={loadState && userBlock}
+            disabled={apiAtuh}
             onClick={() => {
-              if (!apiAtuh && authToken) loadAuthToken(authToken);
+              if (authToken) loadAuthToken(authToken);
             }}
           />
         </div>
