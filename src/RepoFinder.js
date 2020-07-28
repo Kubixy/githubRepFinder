@@ -20,7 +20,7 @@ export default function RepoFinder(props) {
     setErrorState(false);
 
     if (dropdownState === 1) {
-      await githubV3Api(userInput, authToken)
+      await githubV3Api(userInput)
         .then((response) => {
           if (response.data.length > 0) {
             setReposFound(response.data);
@@ -142,17 +142,8 @@ export default function RepoFinder(props) {
               }
               maxLength="39"
               disabled={userBlock && searchState}
-              error={
-                (errorState &&
-                  !userBlock &&
-                  !apiAtuh &&
-                  userInput.length > 0) ||
-                (errorState && apiAtuh)
-              }
-              loading={
-                (loadState && !userBlock && !apiAtuh && userInput.length > 0) ||
-                (loadState && apiAtuh)
-              }
+              error={errorState && !userBlock}
+              loading={loadState && !userBlock}
               onKeyPress={(e) => {
                 if (e.key === "Enter") onClick();
               }}
@@ -167,60 +158,52 @@ export default function RepoFinder(props) {
         />
       </div>
 
-      <div className="authInput">
-        <Popup
-          position="bottom center"
-          on="click"
-          pinned
-          content={
-            <a
-              rel="noopener noreferrer"
-              href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token"
-              target="_blank"
-            >
-              {dropdownState === 1
-                ? "You'll need a token to access your private repositories"
-                : "You must generate a token to use the Api v4"}
-            </a>
-          }
-          trigger={
-            <Input
-              id="inputFieldToken"
-              disabled={apiAtuh || (searchState && !userBlock)}
-              error={errorState}
-              value={authToken}
-              placeholder="Write your personal access token"
-              type="text"
-              onChange={(e) => {
-                setAuthToken(e.target.value);
-              }}
-              onClick={() => {
-                setUserInput("");
-                document.getElementById("inputField").value = "";
-              }}
-              maxLength="100"
-            />
-          }
-        />
-        <Icon
-          name={
-            apiAtuh
-              ? "checkmark box"
-              : loadState && authToken.length > 0
-              ? "sync"
-              : "arrow circle right"
-          }
-          loading={
-            loadState &&
-            ((!searchState && authToken.length > 0) || userBlock) &&
-            !apiAtuh
-          }
-          disabled={apiAtuh || (searchState && !userBlock)}
-          onClick={() => {
-            if (authToken) loadAuthToken(authToken);
-          }}
-        />
-      </div>
+      {dropdownState === 2 && (
+        <div className="authInput">
+          <Popup
+            position="bottom center"
+            on="click"
+            pinned
+            content={
+              <a
+                rel="noopener noreferrer"
+                href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token"
+                target="_blank"
+              >
+                You must generate a token to use the Api v4
+              </a>
+            }
+            trigger={
+              <Input
+                id="inputFieldToken"
+                disabled={apiAtuh}
+                error={errorState && userBlock}
+                value={authToken}
+                placeholder="Write your personal access token"
+                type="text"
+                onChange={(e) => {
+                  setAuthToken(e.target.value);
+                }}
+                maxLength="100"
+              />
+            }
+          />
+          <Icon
+            name={
+              apiAtuh
+                ? "checkmark box"
+                : loadState
+                ? "sync"
+                : "arrow circle right"
+            }
+            loading={loadState && userBlock}
+            disabled={apiAtuh}
+            onClick={() => {
+              if (authToken) loadAuthToken(authToken);
+            }}
+          />
+        </div>
+      )}
     </>
   );
 }
