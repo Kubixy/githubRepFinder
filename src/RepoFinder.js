@@ -19,6 +19,8 @@ export default function RepoFinder(props) {
     setLoadState(true);
     setErrorState(false);
 
+    //Calls the function and if it returns an object
+    //with at least one element, its displayed on the list
     if (dropdownState === 1) {
       await githubV3Api(userInput)
         .then((response) => {
@@ -66,6 +68,8 @@ export default function RepoFinder(props) {
     setLoadState(true);
     let local;
 
+    //this function checks if the token is valid
+    //making a simple query with it
     if (authToken && authToken.length > 0) {
       await authTokenCheck(authToken)
         .then((res) => res.json())
@@ -73,6 +77,8 @@ export default function RepoFinder(props) {
           local = json;
         });
 
+      //if the token is not valid, it returns
+      //an error message
       if (local.hasOwnProperty("message")) {
         setErrorState(true);
         setAuthToken("");
