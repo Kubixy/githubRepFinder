@@ -1,8 +1,10 @@
 const fetch = require("node-fetch");
 const axios = require("axios").default;
 
-export const githubV3Api = (userInput) => {
-  return axios.get(`https://api.github.com/users/${userInput}/repos`);
+export const githubV3Api = (userInput, authToken) => {
+  return authToken
+    ? axios.get(`${userInput}:${authToken} https://api.github.com/user/repos`)
+    : axios.get(`https://api.github.com/users/${userInput}/repos`);
 };
 
 export const githubV4Api = (userInput, authorization) => {

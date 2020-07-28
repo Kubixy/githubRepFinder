@@ -20,7 +20,7 @@ export default function RepoFinder(props) {
     setErrorState(false);
 
     if (dropdownState === 1) {
-      await githubV3Api(userInput)
+      await githubV3Api(userInput, authToken)
         .then((response) => {
           if (response.data.length > 0) {
             setReposFound(response.data);
@@ -75,6 +75,7 @@ export default function RepoFinder(props) {
 
       if (local.hasOwnProperty("message")) {
         setErrorState(true);
+        setAuthToken("");
       } else {
         setApiAtuh(true);
         setUserBlock(false);
@@ -155,51 +156,51 @@ export default function RepoFinder(props) {
         />
       </div>
 
-      {dropdownState === 2 && (
-        <div className="authInput">
-          <Popup
-            position="bottom center"
-            on="click"
-            pinned
-            content={
-              <a
-                rel="noopener noreferrer"
-                href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token"
-                target="_blank"
-              >
-                You need to generate a token to use the Api v4
-              </a>
-            }
-            trigger={
-              <Input
-                disabled={apiAtuh}
-                error={errorState && userBlock}
-                value={authToken}
-                placeholder="Write your personal access token"
-                type="text"
-                onChange={(e) => {
-                  setAuthToken(e.target.value);
-                }}
-                maxLength="100"
-              />
-            }
-          />
-          <Icon
-            name={
-              apiAtuh
-                ? "checkmark box"
-                : loadState
-                ? "sync"
-                : "arrow circle right"
-            }
-            loading={loadState && userBlock}
-            disabled={apiAtuh}
-            onClick={() => {
-              if (authToken) loadAuthToken(authToken);
-            }}
-          />
-        </div>
-      )}
+      <div className="authInput">
+        <Popup
+          position="bottom center"
+          on="click"
+          pinned
+          content={
+            <a
+              rel="noopener noreferrer"
+              href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token"
+              target="_blank"
+            >
+              {dropdownState === 1
+                ? "You'll need a token to access your private repositories"
+                : "You need to generate a token to use the Api v4"}
+            </a>
+          }
+          trigger={
+            <Input
+              disabled={apiAtuh}
+              error={errorState && userBlock}
+              value={authToken}
+              placeholder="Write your personal access token"
+              type="text"
+              onChange={(e) => {
+                setAuthToken(e.target.value);
+              }}
+              maxLength="100"
+            />
+          }
+        />
+        <Icon
+          name={
+            apiAtuh
+              ? "checkmark box"
+              : loadState
+              ? "sync"
+              : "arrow circle right"
+          }
+          loading={loadState && userBlock}
+          disabled={apiAtuh}
+          onClick={() => {
+            if (authToken) loadAuthToken(authToken);
+          }}
+        />
+      </div>
     </>
   );
 }

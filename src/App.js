@@ -27,11 +27,10 @@ function App() {
                   .toLowerCase()
                   .trim()
                   .match(filter.toLowerCase().trim())) && (
-                <List celled>
+                <List celled key={i}>
                   <List.Item>
                     <List.Content>
                       <List.Header
-                        key={i}
                         as="a"
                         //The object returned by the api v3 has the repo url on html_url
                         //the api v4 has it on url
