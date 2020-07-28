@@ -76,11 +76,13 @@ export default function RepoFinder(props) {
       if (local.hasOwnProperty("message")) {
         setErrorState(true);
         setAuthToken("");
+        document.getElementById("inputFieldToken").value = "";
       } else {
         setApiAtuh(true);
         setUserBlock(false);
         setErrorState(false);
         setSearchState(false);
+        setReposFound(null);
       }
     }
 
@@ -140,8 +142,17 @@ export default function RepoFinder(props) {
               }
               maxLength="39"
               disabled={userBlock && searchState}
-              error={errorState && !userBlock}
-              loading={loadState && !userBlock}
+              error={
+                (errorState &&
+                  !userBlock &&
+                  !apiAtuh &&
+                  userInput.length > 0) ||
+                (errorState && apiAtuh)
+              }
+              loading={
+                (loadState && !userBlock && !apiAtuh && userInput.length > 0) ||
+                (loadState && apiAtuh)
+              }
               onKeyPress={(e) => {
                 if (e.key === "Enter") onClick();
               }}
@@ -169,18 +180,23 @@ export default function RepoFinder(props) {
             >
               {dropdownState === 1
                 ? "You'll need a token to access your private repositories"
-                : "You need to generate a token to use the Api v4"}
+                : "You must generate a token to use the Api v4"}
             </a>
           }
           trigger={
             <Input
-              disabled={apiAtuh}
-              error={errorState && userBlock}
+              id="inputFieldToken"
+              disabled={apiAtuh || (searchState && !userBlock)}
+              error={errorState}
               value={authToken}
               placeholder="Write your personal access token"
               type="text"
               onChange={(e) => {
                 setAuthToken(e.target.value);
+              }}
+              onClick={() => {
+                setUserInput("");
+                document.getElementById("inputField").value = "";
               }}
               maxLength="100"
             />
@@ -190,12 +206,16 @@ export default function RepoFinder(props) {
           name={
             apiAtuh
               ? "checkmark box"
-              : loadState
+              : loadState && authToken.length > 0
               ? "sync"
               : "arrow circle right"
           }
-          loading={loadState && userBlock}
-          disabled={apiAtuh}
+          loading={
+            loadState &&
+            ((!searchState && authToken.length > 0) || userBlock) &&
+            !apiAtuh
+          }
+          disabled={apiAtuh || (searchState && !userBlock)}
           onClick={() => {
             if (authToken) loadAuthToken(authToken);
           }}
